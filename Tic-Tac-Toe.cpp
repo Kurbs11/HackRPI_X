@@ -31,7 +31,9 @@ void print(const vector<vector<char> >& board){
         }
         cout << "\n";
 
-        cout << string((board.size()*board[0].size()) + (board.size() - 1), '-') << "\n";
+        if(i != board.size() - 1){
+            cout << string((board.size()*board[0].size()) + (board.size() - 1), '-') << "\n";
+        }
 
 
     }
@@ -44,7 +46,7 @@ int main(){
 
     int rows = 3;
     int cols = 3;
-    vector<vector<char> > board(rows, vector<char>(cols, '0'));
+    vector<vector<char> > board(rows, vector<char>(cols, 'X'));
     int space_left = rows*cols;
 
     print(board);
