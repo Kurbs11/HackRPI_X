@@ -351,6 +351,171 @@ void Standard(char p1char, char p2char){
 
 }
 
+void Standard_SinglePlayer(char p1char) {
+    
+    int rows = 3;
+    int cols = 3;
+    char botchar = '#';
+    int winlen = 3;
+
+    int Tiecount = 0;
+    int turn_count = 0;
+    int start_check_win = 3;
+    bool not_first_time = false;
+    bool finished = false;
+
+    //Main Loop of game:
+    while(!finished){
+
+        if(not_first_time){
+            ++rows;
+            ++cols;
+            winlen = 4; //After the first round, it is win by 4-in-a-row
+        }
+
+        vector<vector<char> > board(rows, vector<char>(cols, ' '));
+        int board_left = rows*cols;
+        string p1wincond = string(winlen, p1char);
+
+        if (p1char == botchar) botchar = '%';
+        string botwincond = string(winlen, botchar);
+        
+
+        std::cout << "Lets play a game of Tic-Tac-Toe(Standard)\n";
+        print2(board);
+
+        while(true){
+            
+            int rowp1 = 0;
+            int colp1 = 0;
+
+            cout << "Player, make your move(input row then col): "; 
+            cin >> rowp1;
+            cout << endl;
+            cin >> colp1; 
+            if ( (rowp1>rows-1 || rowp1 < 0) || (colp1 > cols-1 || colp1 < 0) ) {  //Prevents out-of-bounds access (segmentation fault)
+                while ( (rowp1>=rows || rowp1 < 0) || (colp1 >= cols || colp1 < 0) ) {
+                    cout << "Please select a valid position (0-" << rows-1 << ")\n";
+                    cin >> rowp1;
+                    cout << endl;
+                    cin >> colp1;
+                    cout << endl;
+                }
+            }
+
+            while (board[rowp1][colp1] != ' ') { //Standard Mode, Placing in incorrect spot
+                cout << "Select an unpopulated position: \n";
+                cin >> rowp1;
+                cout << endl;
+                cin >> colp1;
+                cout << endl;
+            }
+
+            board[rowp1][colp1] = p1char;
+            --board_left;
+
+            cout << endl;
+            print2(board);
+            cout << endl;
+            turn_count++;
+
+            //Check for Tie
+            if(board_left == 0){
+                if ( exist(board, p1wincond) ) {
+                cout << "You win, Player 1!\n";
+                finished = true;
+                break;
+                }
+                else if ( exist(board, botwincond) ) {
+                cout << "You lose!\n";
+                finished = true;
+                break;
+                }
+                else{
+                    cout << "Tie Game ---- Expanding Board ---- Retry\n";
+                    cout << "Win 4 in a row\n";
+                    ++Tiecount;
+                    if (Tiecount == 5) cout << "We do a bit of trollin... Have fun ;)\n";
+                    not_first_time = true;
+                    break;
+                }
+            }
+
+            if (turn_count >= (start_check_win) ) {
+                if ( exist(board, p1wincond) ) {
+                cout << "You win, Player 1!\n";
+                finished = true;
+                break;
+                }
+            }
+
+            
+            //Loops through all available spaces so the bot can "choose" a valid location
+            vector < pair <int, int > > available_spaces;
+            for ( int i = 0; i < rows; i++) {
+               for ( int j = 0; j < cols; j++) {
+                    if (board[i][j] == ' ') {
+                        pair < int, int > open_spot;
+                        open_spot.first = i;
+                        open_spot.second = j;
+                        available_spaces.push_back(open_spot);
+                    }
+               }
+            }
+            srand (time(NULL)); //This call makes the numbers different every playthrough
+            int randomnum = rand()%available_spaces.size(); //Choses a random index for the available spaces vector
+            
+            
+            int randomrow = available_spaces[randomnum].first; 
+            int randomcol = available_spaces[randomnum].second;
+
+            cout << "Calculating Moves... \n"; 
+            
+            cout << "Selecting " <<  randomrow << " " << randomcol << "\n";
+            
+            //Don't need error checking for bot, as it always searches for exclusively valid locations
+
+            board[randomrow][randomcol] = botchar;
+            --board_left;
+
+            cout << endl;
+            print2(board);
+            cout << endl;
+            turn_count++;
+
+            //Check for Tie
+            if(board_left == 0){
+                if ( exist(board, p1wincond) ) {
+                cout << "You win, Player 1!\n";
+                finished = true;
+                break;
+                }
+                else if ( exist(board, botwincond) ) {
+                cout << "You lose!\n";
+                finished = true;
+                break;
+                }
+                else{
+                    cout << "Tie Game ---- Expanding Board ---- Retry\n";
+                    cout << "Win 4 in a row\n";
+                    ++Tiecount;
+                    if (Tiecount == 5) cout << "You guys are either clueless, or here for the memes. Have fun ;)\n";
+                    not_first_time = true;
+                    break;
+                }
+            }
+
+            if (turn_count >= (start_check_win) ) {
+                if ( exist(board, botwincond) ) {
+                    cout << "You just lost to a bot! \n";
+                    finished = true;
+                    break;
+                }
+            }
+        }
+    }
+
+}
 
 //Educational Game Mode
 void Educational(char p1char, char p2char){
@@ -637,7 +802,7 @@ int main(){
 
     int style = 0;
     if (mode == "Standard") {
-        cout << "Press 1 for single player and 2 for multiplayer";
+        cout << "Press 1 for single player and 2 for multiplayer: ";
         cin >> style;
         if (style!= 1 && style!= 2) {
         while (style!= 1 && style!= 2) {
@@ -651,23 +816,23 @@ int main(){
     //Character Select
     cout << "Player 1, select your character: ";
     cin >> p1char;
-    cout << "\nPlayer 2, select your character: ";
-    cin >> p2char;
-    cout << endl;
-    if (p2char == p1char) {
-        while (p2char == p1char) {
-            cout << "Select a different character: ";
-            cin >> p2char;
-        }
+    if (style == 2) { 
+        cout << "\nPlayer 2, select your character: ";
+        cin >> p2char;
         cout << endl;
+        if (p2char == p1char) {
+            while (p2char == p1char) {
+                cout << "Select a different character: ";
+                cin >> p2char;
+            }
+            cout << endl;
+        }
     }
 
 
-
     if(mode == "Standard"){
-
-        Standard(p1char, p2char);
-
+        if (style == 1) Standard_SinglePlayer(p1char);
+        else if (style == 2) Standard(p1char, p2char);
     }
     else if(mode == "Educational"){
         Educational(p1char, p2char);
@@ -675,3 +840,4 @@ int main(){
 
     return 0;
 }
+//Notes for future versions: Add a more difficult CPU, allow them to be playable in educational mode.
