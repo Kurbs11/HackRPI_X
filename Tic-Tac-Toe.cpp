@@ -1,6 +1,9 @@
 #include <iostream>
 #include <random>
+#include <stdlib.h> 
 #include <utility>
+#include <time.h>
+
 using namespace std;
 
 //This function takes in a board, a string, a starting row and col, a tracking index and a direction and
@@ -121,7 +124,7 @@ bool exist(std::vector<std::vector<char>>& board, const std::string& word) {
             }
         }
     }
-    // if we reach here, then the word can't be found.
+    // if we reach here, then there is not a victor
     return false;
 }
 
@@ -183,35 +186,238 @@ void print2(const vector<vector<char> >& board){
 }
 
 int main(){
+    cout << "Welcome to Twist-Tac-Toe!\n";
+    cout << "Start by selecting Standard or Educational mode: ";
+    string mode = "";
+    cin >> mode;
+    if (mode!= "Standard" && mode!= "Educational") {
+        while (mode!= "Standard" || mode!= "Educational") {
+            cout << "Please select a valid mode: ";
+           cin >> mode; 
+           if (mode== "Standard" || mode== "Educational") break;
+        }
+    }
+    int rows = 3;
+    int cols = 3;
+    int tie_counter = 0;
 
-    int rows = 5;
-    int cols = 5;
-    string p1wincond = string(rows, 'O');
-    string p2wincond = string(rows, 'X');
+    
+    vector <char> operations;
+    operations.push_back('+');
+    operations.push_back('-');
+    operations.push_back('*');
 
     vector<vector<char> > board(rows, vector<char>(cols, ' '));
     int space_left = rows*cols;
 
+    
     bool finished = false;
 
+    char p1char = 'O';
+    char p2char = 'X';
+
+    cout << "Player 1, select your character: ";
+    cin >> p1char;
+    cout << "\nPlayer 2, select your character: ";
+    cin >> p2char;
+    cout << endl;
+    if (p2char == p1char) {
+        while (p2char == p1char) {
+                cout << "Select a different character: ";
+                cin >> p2char;
+            }
+    }
+
+    print2(board);
+    string p1wincond = string(rows, p1char);
+    string p2wincond = string(rows, p2char);
+    int turn_count = 0;
+
+    //Main Loop of game:
     while(!finished){
+        
 
-        print2(board);  
+        int rowp1 = 0;
+        int colp1 = 0;
 
-        char p1char = 'O';
-        char p2char = 'X';
+        
+        cout << "\nPlayer 1, make your move: "; 
+        cin >> rowp1 >> colp1; 
+        if ( (rowp1>rows-1 || rowp1 < 0) || (colp1 > cols-1 || colp1 < 0) ) {  //Prevents out-of-bounds access (segmentation fault)
+            while ( (rowp1>=rows || rowp1 < 0) || (colp1 >= cols || colp1 < 0) ) {
+                cout << "Please select a valid position (0-" << rows-1 << ")";
+                cin >> rowp1 >> colp1;
+                if ( (rowp1<rows &&  rowp1 >= 0) && (colp1 < cols && colp1 >= 0) ) break; 
+            }
+        }
 
-        int row = 0;
-        int col = 0;
+        cout << "Test: " << board[rowp1][colp1];
+        if (board[rowp1][colp1] == ' ' && mode == "Standard") board[rowp1][colp1] = p1char;
+        
+        else if (board[rowp1][colp1] == ' ' && mode == "Educational") {
+             srand (time(NULL)); //This call should make the numbers different every playthrough
+             int randomnum1 = rand()%12;
+             int randomnum2 = rand()%12;
+             int randomoperation = rand()%3; //Used for choosing between +/-/*
+            cout << "What is " << randomnum1 << operations[randomoperation] << randomnum2 << "? ";
+            if (operations[randomoperation] == '+') {
+                int correct_answer = randomnum1 + randomnum2;
+                int response = 0;
+                cin >> response; 
+                if (response == correct_answer) board[rowp1][colp1] = p1char;
+                else {
+                    cout << "Incorrect, " << randomnum1 << "+" << randomnum2 << "=" << correct_answer << "\n";
+                    cout << "Skipping Turn..." << "\n";    
+                    turn_count--;
+                }
+            }
 
-        hhhhhhhhhhhhhhhhhh
+            else if (operations[randomoperation] == '-') {
+                int correct_answer = randomnum1 - randomnum2;
+                int response = 0;
+                cin >> response; 
+                if (response == correct_answer) board[rowp1][colp1] = p1char;
+                else {
+                    cout << "Incorrect, " << randomnum1 << "-" << randomnum2 << "=" << correct_answer << "\n";
+                    cout << "Skipping Turn..." << "\n";
+                    turn_count--;
+                    
+                }
+            }
 
-        pair<int, int> p1choice(row, col);
+            else if (operations[randomoperation] == '*') {
+                int correct_answer = randomnum1 * randomnum2;
+                int response = 0;
+                cin >> response; 
+                if (response == correct_answer) board[rowp1][colp1] = p1char;
+                else {
+                    cout << "Incorrect, " << randomnum1 << "x" << randomnum2 << "=" << correct_answer << "\n";
+                    cout << "Skipping Turn" << p1char << "\n";
+                    turn_count--;
+                    
+                }
+            }
+            
+        }
+        
+        else if ( board[rowp1][colp1] != ' ' && mode == "Standard") {
+            while (board[rowp1][colp1] != ' ') { //Standard Mode, Placing in incorrect spot
+                cout << "Select an unpopulated position: ";
+                cin >> rowp1 >> colp1;
+                if (board[rowp1][colp1] == ' ' && rowp1<rows && colp1 <cols ) {
+                    board[rowp1][colp1] = p1char;
+                    break; }
+            }
+            
+        }
+        
+        cout << endl; 
+        print2(board);
+        cout << endl;
+
+        turn_count++;
+        if (turn_count >= (rows+cols-1) ) {
+             if ( exist(board, p1wincond) ) {
+                cout << "You win, Player 1!\n";
+                finished = true;
+                break;
+             }
+        }
+        if (turn_count == rows*cols) { //Meaning last turn has occurred, and
+            //there is a tie, since otherwise previous conditional would've executed break
+            cout << "Tie!\n!"; //Now increase board dimensions
+            tie_counter++;
+            break; //Temporary
+        }
+
+        int rowp2 = 0;
+        int colp2 = 0;
+        
+        cout << "\nPlayer 2, make your move: "; 
+        pair<int, int> p2choice(rowp2, colp2);
+        cin >> rowp2 >> colp2; 
+        if ( (rowp2>rows-1 || rowp2 < 0)|| (colp2 > cols-1 || colp2 < 0) ) { 
+            while ((rowp2>=rows || rowp2 < 0) || (colp2 >= cols || colp2 < 0) ) {
+                cout << "Please select a valid position (0-" << rows-1 << ")\n";
+                cin >> rowp2 >> colp2;
+                if ((rowp2<rows &&  rowp2 >= 0) && (colp2 < cols && colp2 >= 0)) break; 
+            }
+        }
+
+        if (board[rowp2][colp2] == ' ' && mode == "Standard") board[rowp2][colp2] = p2char; //If index isn't populated
+
+        if (board[rowp2][colp2] == ' ' && mode == "Educational") {
+             srand (time(NULL)); //This call should make the numbers different every playthrough
+             int randomnum1 = rand()%12;
+             int randomnum2 = rand()%12;
+             int randomoperation = rand()%3; //Used for choosing between +/-/*
+            cout << "What is " << randomnum1 << operations[randomoperation] << randomnum2 << "? ";
+            if (operations[randomoperation] == '+') {
+                int correct_answer = randomnum1 + randomnum2;
+                int response = 0;
+                cin >> response; 
+                if (response == correct_answer) board[rowp2][colp2] = p2char;
+                else {
+                    cout << "Incorrect, " << randomnum1 << "+" << randomnum2 << "=" << correct_answer << "\n";
+                    cout << "Skipping Turn..." << "\n";    
+                    turn_count--;
+                }
+            }
+
+            else if (operations[randomoperation] == '-') {
+                int correct_answer = randomnum1 - randomnum2;
+                int response = 0;
+                cin >> response; 
+                if (response == correct_answer) board[rowp2][colp2] = p2char;
+                else {
+                    cout << "Incorrect, " << randomnum1 << "-" << randomnum2 << "=" << correct_answer << "\n";
+                    cout << "Skipping Turn..." << "\n";
+                    turn_count--;
+                    
+                }
+            }
+
+            else if (operations[randomoperation] == '*') {
+                int correct_answer = randomnum1 * randomnum2;
+                int response = 0;
+                cin >> response; 
+                if (response == correct_answer) board[rowp2][colp2] = p2char;
+                else {
+                    cout << "Incorrect, " << randomnum1 << "x" << randomnum2 << "=" << correct_answer << "\n";
+                    cout << "Skipping Turn" << p2char << "\n";
+                    turn_count--;
+                    
+                }
+            }
+            
+        }
+
+        else if  (board[rowp2][colp2] != ' ' && mode == "Standard") {
+            while (board[rowp2][colp2] != ' ') { //Standard mode, already populated location
+                    cout << "Select an unpopulated position: ";
+                    cin >> rowp2 >> colp2;
+                    
+                     if (board[rowp2][colp2] == ' ' && rowp2<rows && colp2 <cols) {
+                        board[rowp2][colp2] = p2char;
+                        break;
+                     }
+                }
+    }
 
 
+        cout << endl;
+        print2(board);
+        cout << endl;
+        turn_count++;
+        if (turn_count >=5) {
+             if ( exist(board, p2wincond) ) {
+                cout << "You win, Player 2!";
+                finished = true;
+                break;
+             }
+        }
 
-
-
+        
 
     }
 
