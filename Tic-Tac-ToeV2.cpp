@@ -192,12 +192,10 @@ void Standard(char p1char, char p2char){
     int rows = 3;
     int cols = 3;
 
-    vector<vector<char> > board(rows, vector<char>(cols, ' '));
-    int space_left = rows*cols;
-
     int winlen = 3;
 
     int Tiecount = 0;
+    int turn_count = 0;
     int start_check_win = 3;
     bool not_first_time = false;
     bool finished = false;
@@ -215,7 +213,7 @@ void Standard(char p1char, char p2char){
         int board_left = rows*cols;
         string p1wincond = string(winlen, p1char);
         string p2wincond = string(winlen, p2char);
-        int turn_count = 0;
+        
 
         std::cout << "Lets play a game of Tic-Tac-Toe(Standard)\n";
         print2(board);
@@ -269,7 +267,9 @@ void Standard(char p1char, char p2char){
                 }
                 else{
                     cout << "Tie Game ---- Expanding Board ---- Retry\n";
+                    cout << "Win 4 in a row\n";
                     ++Tiecount;
+                    if (Tiecount == 5) cout << "You guys are either clueless, or here for the memes. Have fun ;)\n";
                     not_first_time = true;
                     break;
                 }
@@ -331,7 +331,9 @@ void Standard(char p1char, char p2char){
                 }
                 else{
                     cout << "Tie Game ---- Expanding Board ---- Retry\n";
+                    cout << "Win 4 in a row\n";
                     ++Tiecount;
+                    if (Tiecount == 5) cout << "You guys are either clueless, or here for the memes. Have fun ;)\n";
                     not_first_time = true;
                     break;
                 }
@@ -358,6 +360,7 @@ void Educational(char p1char, char p2char){
     int winlen = 3;
     int start_check_win = 3;
     bool finished = false;
+    int num_size = 12; //Default biggest number in each math question
 
     vector <char> operations;
     operations.push_back('+');
@@ -370,13 +373,13 @@ void Educational(char p1char, char p2char){
         int board_left = rows*cols;
         string p1wincond = string(winlen, p1char);
         string p2wincond = string(winlen, p2char);
-
-        std::cout << "Lets play a game of Tic-Tac-Toe\n";
+        int turn_count = 0;
+        std::cout << "Lets play a game of Tic-Tac-Toe!\n";
         print2(board);
 
         while (true){
             
-            int turn_count = 0;
+            
             int rowp1 = 0;
             int colp1 = 0;
 
@@ -402,9 +405,9 @@ void Educational(char p1char, char p2char){
                 cout << endl;
             }
 
-            srand (time(NULL)); //This call should make the numbers different every playthrough
-            int randomnum1 = rand()%12;
-            int randomnum2 = rand()%12;
+            srand (time(NULL)); //This call makes the numbers different every playthrough
+            int randomnum1 = rand()%num_size;
+            int randomnum2 = rand()%num_size;
             int randomoperation = rand()%3; //Used for choosing between +/-/*
             cout << "What is " << randomnum1 << operations[randomoperation] << randomnum2 << "? ";
             if (operations[randomoperation] == '+') {
@@ -460,7 +463,7 @@ void Educational(char p1char, char p2char){
             turn_count++;
 
             //Check for Tie
-            if(board_left == 0){
+            if(board_left == 0  ){
                 if ( exist(board, p1wincond) ) {
                 cout << "You win, Player 1!\n";
                 finished = true;
@@ -473,10 +476,12 @@ void Educational(char p1char, char p2char){
                 }
                 else{
                     cout << "Tie Game ---- Try Again ----\n";
+                    num_size += 5;
+                    cout << "Moderately Increasing Mathematic Difficulty...\n";
                     break;
                 }
             }
-
+            cout << "Turn Count: " << turn_count << "\n";
             if (turn_count >= (start_check_win) ) {
                 if ( exist(board, p1wincond) ) {
                     cout << "You win, Player 1!\n";
@@ -514,13 +519,16 @@ void Educational(char p1char, char p2char){
             srand (time(NULL)); //This call should make the numbers different every playthrough
             int randomnum3 = rand()%12;
             int randomnum4 = rand()%12;
-            int randomoperation = rand()%3; //Used for choosing between +/-/*
-            cout << "What is " << randomnum3 << operations[randomoperation] << randomnum4 << "? ";
-            if (operations[randomoperation] == '+') {
+            int randomoperation2 = rand()%3; //Used for choosing between +/-/*
+            cout << "What is " << randomnum3 << operations[randomoperation2] << randomnum4 << "? ";
+            if (operations[randomoperation2] == '+') {
                 int correct_answer = randomnum3 + randomnum4;
                 int response = 0;
                 cin >> response; 
-                if (response == correct_answer) board[rowp2][colp2] = p2char;
+                if (response == correct_answer) {
+                board[rowp2][colp2] = p2char;
+                board_left--;
+                }
                 else {
                     cout << "Incorrect, " << randomnum3 << "+" << randomnum4 << "=" << correct_answer << "\n";
                     cout << "Skipping Turn..." << "\n";    
@@ -528,11 +536,14 @@ void Educational(char p1char, char p2char){
                 }
             }
 
-            else if (operations[randomoperation] == '-') {
+            else if (operations[randomoperation2] == '-') {
                 int correct_answer = randomnum3 - randomnum4;
                 int response = 0;
                 cin >> response; 
-                if (response == correct_answer) board[rowp2][colp2] = p2char;
+                if (response == correct_answer) {
+                board[rowp2][colp2] = p2char;
+                board_left--;
+                }
                 else {
                     cout << "Incorrect, " << randomnum3 << "-" << randomnum4 << "=" << correct_answer << "\n";
                     cout << "Skipping Turn..." << "\n";
@@ -541,11 +552,13 @@ void Educational(char p1char, char p2char){
                 }
             }
 
-            else if (operations[randomoperation] == '*') {
+            else if (operations[randomoperation2] == '*') {
                 int correct_answer = randomnum3 * randomnum4;
                 int response = 0;
                 cin >> response; 
-                if (response == correct_answer) board[rowp2][colp2] = p2char;
+                if (response == correct_answer) {
+                    board[rowp2][colp2] = p2char;
+                    board_left--; }
                 else {
                     cout << "Incorrect, " << randomnum3 << "x" << randomnum4 << "=" << correct_answer << "\n";
                     cout << "Skipping Turn" << p2char << "\n";
@@ -594,20 +607,21 @@ void Educational(char p1char, char p2char){
 int main(){
 
     //Mode Select
-    cout << "Welcome to Twist-Tac-Toe!\n";
+    cout << "\nWelcome to Twist-Tac-Toe!\n";
 
     //Print rule board
-    cout << "Following is the location guide to the board. This is how you choose the row and col you want to fill.\n";
-    cout << "Size of board may vary, but you get the idea.\n";
+    cout << "Here is the location guide to the board. This is how you choose the row and column you want to fill.\n";
     vector<vector<char> >demo(3, vector<char>(3, ' '));
-    for(unsigned int i = 0; i < demo.size(); i++){
-        demo[i][0] = i;
-    }
-    for(unsigned int j = 0; j < demo[0].size(); j++){
-        demo[0][j] = j;
-    }
+    
+    demo[0][0] = '0';
+    demo[1][0] = '1';
+    demo[0][1] = '1';
+    demo[2][0] = '2';
+    demo[0][2] = '2';
+   
+    print2(demo);
 
-    cout << "Start by selecting Standard or Educational mode: ";
+    cout << "\nStart by selecting Standard or Educational mode: ";
     string mode;
     cin >> mode;
     if (mode!= "Standard" && mode!= "Educational") {
@@ -618,13 +632,26 @@ int main(){
         }
     }
     
-    char p1char = 'O';
-    char p2char = 'X';
+    char p1char = 'X'; //Classic placeholders 
+    char p2char = 'O';
+
+    int style = 0;
+    if (mode == "Standard") {
+        cout << "Press 1 for single player and 2 for multiplayer";
+        cin >> style;
+        if (style!= 1 && style!= 2) {
+        while (style!= 1 && style!= 2) {
+            cout << "Please select a valid player format: ";
+           cin >> style; 
+           if (style == 1 || style == 2) break;
+        }
+    }
+    }
 
     //Character Select
-    cout << "Player 1, select your character(Not space): ";
+    cout << "Player 1, select your character: ";
     cin >> p1char;
-    cout << "\nPlayer 2, select your character(Not space): ";
+    cout << "\nPlayer 2, select your character: ";
     cin >> p2char;
     cout << endl;
     if (p2char == p1char) {
@@ -635,8 +662,12 @@ int main(){
         cout << endl;
     }
 
+
+
     if(mode == "Standard"){
+
         Standard(p1char, p2char);
+
     }
     else if(mode == "Educational"){
         Educational(p1char, p2char);

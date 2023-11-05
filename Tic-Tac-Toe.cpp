@@ -208,7 +208,7 @@ int main(){
     operations.push_back('*');
 
     vector<vector<char> > board(rows, vector<char>(cols, ' '));
-    int space_left = rows*cols;
+    
 
     
     bool finished = false;
