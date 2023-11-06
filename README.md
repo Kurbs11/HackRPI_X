@@ -1,9 +1,11 @@
-# HackRPI_X
+# Twist-Tac-Toe
 
 Project Description:
 
-Evolved Tic-Tac-Toe
+This game plays a game of Tic-Tac-Toe with many twists.
 
-This game plays a game of Tic-Tac-Toe with a twist.
+Play 2 different game modes (Standard and Educational), and even play against a bot!
+In standard mode, every time there is a tie, the board dimensions expand.
+In educational mode, you can brush up on your mathematics (or lose a turn if you don't!)
 
-Two game modes: Standard and Educational
+Play version-2 today for the best experience!
