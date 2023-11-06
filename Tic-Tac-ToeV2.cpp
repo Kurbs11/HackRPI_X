@@ -616,7 +616,7 @@ void Educational(char p1char, char p2char){
                 }
                 else {
                     cout << "Incorrect, " << randomnum1 << "x" << randomnum2 << "=" << correct_answer << "\n";
-                    cout << "Skipping Turn" << p1char << "\n";
+                    cout << "Skipping Turn..." << "\n";
                     turn_count--;
                     
                 }
@@ -646,7 +646,6 @@ void Educational(char p1char, char p2char){
                     break;
                 }
             }
-            cout << "Turn Count: " << turn_count << "\n";
             if (turn_count >= (start_check_win) ) {
                 if ( exist(board, p1wincond) ) {
                     cout << "You win, Player 1!\n";
@@ -726,7 +725,7 @@ void Educational(char p1char, char p2char){
                     board_left--; }
                 else {
                     cout << "Incorrect, " << randomnum3 << "x" << randomnum4 << "=" << correct_answer << "\n";
-                    cout << "Skipping Turn" << p2char << "\n";
+                    cout << "Skipping Turn" << "\n";
                     turn_count--;
                     
                 }
@@ -801,17 +800,17 @@ int main(){
     char p2char = 'O';
 
     int style = 0;
-    if (mode == "Standard") {
-        cout << "Press 1 for single player and 2 for multiplayer: ";
-        cin >> style;
-        if (style!= 1 && style!= 2) {
-        while (style!= 1 && style!= 2) {
-            cout << "Please select a valid player format: ";
-           cin >> style; 
-           if (style == 1 || style == 2) break;
+    
+    cout << "Press 1 for single player and 2 for multiplayer: ";
+    cin >> style;
+    if (style!= 1 && style!= 2) {
+    while (style!= 1 && style!= 2) {
+        cout << "Please select a valid player format: ";
+        cin >> style; 
+        if (style == 1 || style == 2) break;
         }
     }
-    }
+
 
     //Character Select
     cout << "Player 1, select your character: ";
