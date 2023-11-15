@@ -128,44 +128,10 @@ bool exist(vector<vector<char>>& board, const string& word) {
     return false;
 }
 
-//Print function version 1
-void print(const vector<vector<char> >& board){
 
-    for(unsigned int i = 0; i < board.size(); i++){
-        
-        for(unsigned int k = 0; k < board.size(); k++){
-            cout << "   ";
-            if(k != board.size()-1){
-                cout << "|";
-            }
-        }
-        cout << "\n";
-        for(unsigned int j = 0; j < board[0].size(); j++){
-            
-            cout << " " << board[i][j] << " ";
-            if(j != board[0].size() - 1){
-                cout << "|";
-            }
-            
-        }
-        cout << "\n";
-        
-        for(unsigned int k = 0; k < board.size(); k++){
-            cout << "   ";
-            if(k != board.size()-1){
-                cout << "|";
-            }
-        }
-        cout << "\n";
-
-        if(i != board.size() - 1){
-            cout << string((3*board[0].size()) + (board.size() - 1), '-') << "\n";
-        }
-    }
-}
 
 //Print function version 2 (Using this one)
-void print2(const vector<vector<char> >& board){
+void print(const vector<vector<char> >& board){
 
     for(unsigned int i = 0; i < board.size(); i++){
         for(unsigned int j = 0; j < board[0].size(); j++){
@@ -196,7 +162,7 @@ void Standard(char p1char, char p2char){
 
     int Tiecount = 0;
     int turn_count = 0;
-    int start_check_win = 3;
+    int start_check_win = 5;
     bool not_first_time = false;
     bool finished = false;
 
@@ -216,7 +182,7 @@ void Standard(char p1char, char p2char){
         
 
         std::cout << "Lets play a game of Tic-Tac-Toe(Standard)\n";
-        print2(board);
+        print(board);
 
         while(true){
             
@@ -249,7 +215,7 @@ void Standard(char p1char, char p2char){
             --board_left;
 
             cout << endl;
-            print2(board);
+            print(board);
             cout << endl;
             turn_count++;
 
@@ -269,6 +235,7 @@ void Standard(char p1char, char p2char){
                     cout << "Tie Game ---- Expanding Board ---- Retry\n";
                     cout << "Win 4 in a row\n";
                     ++Tiecount;
+                    start_check_win+=2;
                     if (Tiecount == 5) cout << "You guys are either clueless, or here for the memes. Have fun ;)\n";
                     not_first_time = true;
                     break;
@@ -313,7 +280,7 @@ void Standard(char p1char, char p2char){
             --board_left;
 
             cout << endl;
-            print2(board);
+            print(board);
             cout << endl;
             turn_count++;
 
@@ -333,6 +300,7 @@ void Standard(char p1char, char p2char){
                     cout << "Tie Game ---- Expanding Board ---- Retry\n";
                     cout << "Win 4 in a row\n";
                     ++Tiecount;
+                    start_check_win+=2;
                     if (Tiecount == 5) cout << "You guys are either clueless, or here for the memes. Have fun ;)\n";
                     not_first_time = true;
                     break;
@@ -351,7 +319,7 @@ void Standard(char p1char, char p2char){
 
 }
 
-void Standard_SinglePlayer(char p1char) {
+void Standard_SinglePlayer(char p1char, string difficulty) {
     
     int rows = 3;
     int cols = 3;
@@ -360,7 +328,7 @@ void Standard_SinglePlayer(char p1char) {
 
     int Tiecount = 0;
     int turn_count = 0;
-    int start_check_win = 3;
+    int start_check_win = 5;
     bool not_first_time = false;
     bool finished = false;
 
@@ -382,7 +350,7 @@ void Standard_SinglePlayer(char p1char) {
         
 
         std::cout << "Lets play a game of Tic-Tac-Toe(Standard)\n";
-        print2(board);
+        print(board);
 
         while(true){
             
@@ -415,7 +383,7 @@ void Standard_SinglePlayer(char p1char) {
             --board_left;
 
             cout << endl;
-            print2(board);
+            print(board);
             cout << endl;
             turn_count++;
 
@@ -435,6 +403,7 @@ void Standard_SinglePlayer(char p1char) {
                     cout << "Tie Game ---- Expanding Board ---- Retry\n";
                     cout << "Win 4 in a row\n";
                     ++Tiecount;
+                    start_check_win+=2;
                     if (Tiecount == 5) cout << "We do a bit of trollin... Have fun ;)\n";
                     not_first_time = true;
                     break;
@@ -443,14 +412,14 @@ void Standard_SinglePlayer(char p1char) {
 
             if (turn_count >= (start_check_win) ) {
                 if ( exist(board, p1wincond) ) {
-                cout << "You win, Player 1!\n";
+                cout << "You win!\n";
                 finished = true;
                 break;
                 }
             }
 
             
-            //Loops through all available spaces so the bot can "choose" a valid location
+            //Loops through all available spaces so the bot can choose a valid location
             vector < pair <int, int > > available_spaces;
             for ( int i = 0; i < rows; i++) {
                for ( int j = 0; j < cols; j++) {
@@ -462,24 +431,62 @@ void Standard_SinglePlayer(char p1char) {
                     }
                }
             }
-            srand (time(NULL)); //This call makes the numbers different every playthrough
-            int randomnum = rand()%available_spaces.size(); //Choses a random index for the available spaces vector
-            
-            
-            int randomrow = available_spaces[randomnum].first; 
-            int randomcol = available_spaces[randomnum].second;
+            if (difficulty == "Easy" || difficulty == "easy") {
+                srand (time(NULL)); //This call makes the numbers different every playthrough
+                int randomnum = rand()%available_spaces.size(); //Choses a random index for the available spaces vector
+                
+                int randomrow = available_spaces[randomnum].first; 
+                int randomcol = available_spaces[randomnum].second;
 
-            cout << "Calculating Moves... \n"; 
-            
-            cout << "Selecting " <<  randomrow << " " << randomcol << "\n";
-            
-            //Don't need error checking for bot, as it always searches for exclusively valid locations
+                cout << "Calculating Moves... \n"; 
+                
+                cout << "Selecting " <<  randomrow << " " << randomcol << "\n";
+                
+                //Don't need error checking for bot, as it always searches for exclusively valid locations
 
-            board[randomrow][randomcol] = botchar;
+                board[randomrow][randomcol] = botchar;
+            }
+            if (difficulty == "Realistic"|| difficulty == "realistic") {
+                bool blocked_player = false;
+                if (turn_count >= (start_check_win-2)) {
+                    for (unsigned int i; i < available_spaces.size(); i++){
+                        vector <vector<char> > temp_board = board; 
+                        int currentrow = available_spaces[i].first; 
+                        int currentcol = available_spaces[i].second; 
+                        std::cout << currentrow << " " << currentcol << "\n";
+
+                        temp_board[currentrow][currentcol] = p1char; //Considers all open spots, analyzes if a spot 
+                        //Could cause the player to win by simulating the exist function on a temporary board
+                        if (exist(temp_board, p1wincond)) {
+                            board[currentrow][currentcol] = botchar; //Blocks potentially game-winning move
+                            blocked_player = true;
+                            cout << "Heard you wanted a challenge? \n"; 
+                            cout << "Selecting " <<  currentrow << " " << currentcol << "\n";
+                            break; //On off chance the player cornered the bot into trying to counter two moves, we don't want them to
+                        } 
+                    }
+                
+
+                }
+                if (blocked_player == false) { //Use a bool because we don't want the bot making 2 moves in one turn
+                    srand (time(NULL)); //This call makes the numbers different every playthrough
+                    int randomnum = rand()%available_spaces.size(); //Choses a random index for the available spaces vector
+                    
+                    int randomrow = available_spaces[randomnum].first; 
+                    int randomcol = available_spaces[randomnum].second;
+
+                    cout << "Calculating Moves... \n"; 
+                    cout << "Selecting " <<  randomrow << " " << randomcol << "\n";
+
+                    board[randomrow][randomcol] = botchar;
+                }
+
+            }
+
             --board_left;
 
             cout << endl;
-            print2(board);
+            print(board);
             cout << endl;
             turn_count++;
 
@@ -499,6 +506,7 @@ void Standard_SinglePlayer(char p1char) {
                     cout << "Tie Game ---- Expanding Board ---- Retry\n";
                     cout << "Win 4 in a row\n";
                     ++Tiecount;
+                    start_check_win+=2;
                     if (Tiecount == 5) cout << "You guys are either clueless, or here for the memes. Have fun ;)\n";
                     not_first_time = true;
                     break;
@@ -523,7 +531,7 @@ void Educational(char p1char, char p2char){
     int rows = 3;
     int cols = 3;
     int winlen = 3;
-    int start_check_win = 3;
+    int start_check_win = 5;
     bool finished = false;
     int num_size = 12; //Default biggest number in each math question
 
@@ -540,7 +548,7 @@ void Educational(char p1char, char p2char){
         string p2wincond = string(winlen, p2char);
         int turn_count = 0;
         std::cout << "Lets play a game of Tic-Tac-Toe!\n";
-        print2(board);
+        print(board);
 
         while (true){
             
@@ -623,7 +631,7 @@ void Educational(char p1char, char p2char){
             }
 
             cout << endl; 
-            print2(board);
+            print(board);
             cout << endl;
             turn_count++;
 
@@ -681,8 +689,8 @@ void Educational(char p1char, char p2char){
             }
 
             srand (time(NULL)); //This call should make the numbers different every playthrough
-            int randomnum3 = rand()%12;
-            int randomnum4 = rand()%12;
+            int randomnum3 = rand()%num_size;
+            int randomnum4 = rand()%num_size;
             int randomoperation2 = rand()%3; //Used for choosing between +/-/*
             cout << "What is " << randomnum3 << operations[randomoperation2] << randomnum4 << "? ";
             if (operations[randomoperation2] == '+') {
@@ -732,7 +740,7 @@ void Educational(char p1char, char p2char){
             }
             
             cout << endl;
-            print2(board);
+            print(board);
             cout << endl;
             turn_count++;
 
@@ -783,16 +791,16 @@ int main(){
     demo[2][0] = '2';
     demo[0][2] = '2';
    
-    print2(demo);
+    print(demo);
 
     cout << "\nStart by selecting Standard or Educational mode: ";
     string mode;
     cin >> mode;
-    if (mode!= "Standard" && mode!= "Educational") {
-        while (mode!= "Standard" || mode!= "Educational") {
+    if (mode!= "Standard" && mode!= "standard" && mode!= "Educational" && mode!= "educational") {
+        while (mode!= "Standard" || mode!= "standard" || mode!= "Educational" || mode!= "educational") {
             cout << "Please select a valid mode: ";
            cin >> mode; 
-           if (mode== "Standard" || mode== "Educational") break;
+           if (mode== "Standard" || mode== "standard" || mode== "Educational" || mode== "educational") break;
         }
     }
     
@@ -827,13 +835,26 @@ int main(){
             cout << endl;
         }
     }
+    string difficulty; //For determining CPU difficulty
 
+    if(mode == "Standard" || mode == "standard"){
+        if (style == 1) {
 
-    if(mode == "Standard"){
-        if (style == 1) Standard_SinglePlayer(p1char);
+            cout << "\nSelect CPU Difficulty (Easy or Realistic): ";
+            cin >> difficulty;
+            if (difficulty!= "Easy" && difficulty!= "easy" && difficulty!= "Realistic" && difficulty!= "realistic") {
+                while (difficulty!= "Easy" || difficulty!= "Realistic") {
+                    cout << "Please select a valid difficulty: ";
+                    cin >> difficulty; 
+           if (difficulty == "Easy" || difficulty == "easy" || difficulty == "Realistic" || difficulty == "realistic" ) break;
+        }
+    }
+            
+            Standard_SinglePlayer(p1char, difficulty);
+        }
         else if (style == 2) Standard(p1char, p2char);
     }
-    else if(mode == "Educational"){
+    else if(mode == "Educational" || mode == "educational"){
         Educational(p1char, p2char);
     }
 
